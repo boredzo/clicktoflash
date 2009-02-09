@@ -30,7 +30,7 @@ THE SOFTWARE.
 
 @interface CTFClickToFlashPlugin : NSView <WebPlugInViewFactory> {
     DOMElement *_container;
-    NSString *_host;
+    NSURL *baseURL;
     NSDictionary* _flashVars;
     NSTrackingArea *trackingArea;
     NSAlert* _activeAlert;
@@ -46,7 +46,7 @@ THE SOFTWARE.
 - (id) initWithArguments:(NSDictionary *)arguments;
 
 @property (nonatomic, retain) DOMElement *container;
-@property (nonatomic, retain) NSString *host;
+@property (nonatomic, copy) NSURL *baseURL;
 @property (readonly, nonatomic, retain) NSString *addToWhiteListMenuTitle;
 
 - (IBAction)addToWhitelist:(id)sender;

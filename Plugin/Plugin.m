@@ -113,9 +113,8 @@ static NSString *sCTFWhitelistAdditionMade = @"CTFWhitelistAdditionMade";
         
         // Get URL and test against the whitelist
         
-        NSURL *base = [arguments objectForKey:WebPlugInBaseURLKey];
-        if (base) {
-            self.host = [base host];
+		self.baseURL = [arguments objectForKey:WebPlugInBaseURLKey];
+        if (self.baseURL) {
             if ([self _isHostWhitelisted]) {
                 loadFromWhiteList = true;
             }
@@ -143,7 +142,7 @@ static NSString *sCTFWhitelistAdditionMade = @"CTFWhitelistAdditionMade";
         NSLog( @"flashvars = %@", _flashVars );
 #endif
         
-        _fromYouTube = [self.host isEqualToString:@"www.youtube.com"]
+        _fromYouTube = [[self.baseURL host] isEqualToString:@"www.youtube.com"]
                     || [flashvars rangeOfString: @"www.youtube.com"].location != NSNotFound;
         
         // Handle if this is loading from whitelist
@@ -213,7 +212,7 @@ static NSString *sCTFWhitelistAdditionMade = @"CTFWhitelistAdditionMade";
     [self _abortAlert];        // to be on the safe side
     
     self.container = nil;
-    self.host = nil;
+    self.baseURL = nil;
     [_flashVars release];
     [[NSNotificationCenter defaultCenter] removeObserver: self];
 
@@ -296,7 +295,7 @@ static NSString *sCTFWhitelistAdditionMade = @"CTFWhitelistAdditionMade";
 - (void) _askToAddCurrentSiteToWhitelist
 {
     NSString *title = NSLocalizedString(@"Always load Flash for this site?", @"Always load Flash for this site? alert title");
-    NSString *message = [NSString stringWithFormat:NSLocalizedString(@"Add %@ to the whitelist?", @"Add <sitename> to the whitelist? alert message"), self.host];
+    NSString *message = [NSString stringWithFormat:NSLocalizedString(@"Add %@ to the whitelist?", @"Add <sitename> to the whitelist? alert message"), [self.baseURL host]];
     
     NSAlert *alert = [[NSAlert alloc] init];
     [alert addButtonWithTitle:NSLocalizedString(@"Add to Whitelist", @"Add to Whitelist button")];
@@ -324,7 +323,7 @@ static NSString *sCTFWhitelistAdditionMade = @"CTFWhitelistAdditionMade";
 - (BOOL) _isHostWhitelisted
 {
     NSArray *hostWhitelist = [[NSUserDefaults standardUserDefaults] stringArrayForKey:sHostWhitelistDefaultsKey];
-    return hostWhitelist && [hostWhitelist containsObject:self.host];
+    return hostWhitelist && [hostWhitelist containsObject:[self.baseURL host]];
 }
 
 - (NSMutableArray *)_hostWhitelist
@@ -339,7 +338,7 @@ static NSString *sCTFWhitelistAdditionMade = @"CTFWhitelistAdditionMade";
 - (void) _addHostToWhitelist
 {
     NSMutableArray *hostWhitelist = [self _hostWhitelist];
-    [hostWhitelist addObject:self.host];
+    [hostWhitelist addObject:[self.baseURL host]];
     [[NSUserDefaults standardUserDefaults] setObject:hostWhitelist forKey:sHostWhitelistDefaultsKey];
     [[NSNotificationCenter defaultCenter] postNotificationName: sCTFWhitelistAdditionMade object: self];
 }
@@ -347,7 +346,7 @@ static NSString *sCTFWhitelistAdditionMade = @"CTFWhitelistAdditionMade";
 - (void) _removeHostFromWhitelist
 {
     NSMutableArray *hostWhitelist = [self _hostWhitelist];
-    [hostWhitelist removeObject:self.host];
+    [hostWhitelist removeObject:[self.baseURL host]];
     [[NSUserDefaults standardUserDefaults] setObject:hostWhitelist forKey:sHostWhitelistDefaultsKey];
 }
 
@@ -362,7 +361,7 @@ static NSString *sCTFWhitelistAdditionMade = @"CTFWhitelistAdditionMade";
 
 - (NSString*) addToWhiteListMenuTitle
 {
-    return [NSString stringWithFormat:NSLocalizedString(@"Add %@ to Whitelist", @"Add <sitename> to Whitelist menu title"), self.host];
+    return [NSString stringWithFormat:NSLocalizedString(@"Add %@ to Whitelist", @"Add <sitename> to Whitelist menu title"), [self.baseURL host]];
 }
 
 - (BOOL)validateMenuItem:(NSMenuItem *)menuItem
@@ -397,7 +396,7 @@ static NSString *sCTFWhitelistAdditionMade = @"CTFWhitelistAdditionMade";
         return;
     
     NSString *title = NSLocalizedString(@"Stop always loading Flash?", @"Stop always loading Flash? alert title");
-    NSString *message = [NSString stringWithFormat:NSLocalizedString(@"Remove %@ from the whitelist?", @"Remove %@ from the whitelist? alert message"), self.host];
+    NSString *message = [NSString stringWithFormat:NSLocalizedString(@"Remove %@ from the whitelist?", @"Remove %@ from the whitelist? alert message"), [self.baseURL host]];
     
     NSAlert *alert = [[NSAlert alloc] init];
     [alert addButtonWithTitle:NSLocalizedString(@"Remove from Whitelist", @"Remove from Whitelist button")];
@@ -741,6 +740,6 @@ static NSString *sCTFWhitelistAdditionMade = @"CTFWhitelistAdditionMade";
 
 
 @synthesize container = _container;
-@synthesize host = _host;
+@synthesize baseURL;
 
 @end
