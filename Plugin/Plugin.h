@@ -52,6 +52,7 @@ THE SOFTWARE.
 - (IBAction)addToWhitelist:(id)sender;
 - (IBAction)removeFromWhitelist:(id)sender;
 - (IBAction)editWhitelist:(id)sender;
+- (IBAction)copyFlashMovieURL:(id)sender;
 - (IBAction)loadFlash:(id)sender;
 - (IBAction)loadH264:(id)sender;
 - (IBAction)loadAllOnPage:(id)sender;

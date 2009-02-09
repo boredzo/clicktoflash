@@ -426,6 +426,19 @@ static NSString *sCTFWhitelistAdditionMade = @"CTFWhitelistAdditionMade";
 	[ [ CTFMenubarMenuController sharedController ] showSettingsWindow: self ];
 }
 
+- (IBAction)copyFlashMovieURL:(id)sender
+{
+    BOOL isObject = [self.container.tagName isEqualToString:@"OBJECT"];
+    NSString *movieURLString = [self.container getAttribute:(isObject ? @"data" : @"src")];
+    NSURL *movieURL = [[NSURL URLWithString:movieURLString relativeToURL:self.baseURL] absoluteURL];
+    movieURLString = [movieURL absoluteString];
+
+    NSPasteboard *pboard = [NSPasteboard generalPasteboard];
+    [pboard declareTypes:[NSArray arrayWithObjects:NSURLPboardType, NSStringPboardType, nil] owner:self];
+    [self.baseURL writeToPasteboard:pboard];
+    [pboard setString:movieURLString forType:NSStringPboardType];
+}
+
 - (IBAction)loadFlash:(id)sender;
 {
     [self _convertTypesForFlashContainer];
